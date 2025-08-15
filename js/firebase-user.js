@@ -3,12 +3,12 @@ import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/fi
 
 // Your Web App's Firebase config
 const firebaseConfig = {
-	apiKey: "AIzaSyDJrImD5M29U1JsOM9-632yyvmOE43U6QQ",
-	authDomain: "alt-voice-9f2d7.firebaseapp.com",
-	projectId: "alt-voice-9f2d7",
-	storageBucket: "alt-voice-9f2d7.firebasestorage.app",
-	messagingSenderId: "12255343510",
-	appId: "1:12255343510:web:46094c8010086a4a8823b7"
+	apiKey: apiKey,
+	authDomain: authDomain,
+	projectId: projectId,
+	storageBucket: storageBucket,
+	messagingSenderId: messagingSenderId,
+	appId: appId
 };
 
 // Initialize Firebase
