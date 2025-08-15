@@ -1,54 +1,45 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
-// Your Web App's Firebase config
-const firebaseConfig = {
-	apiKey: apiKey,
-	authDomain: authDomain,
-	projectId: projectId,
-	storageBucket: storageBucket,
-	messagingSenderId: messagingSenderId,
-	appId: appId
-};
+async function initializeFirebase() {
+	const response = await fetch('/firebase-config');
+	const firebaseConfig = await response.json();
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth();
-const user = auth.currentUser;
+	// Initialize Firebase
+	const app = initializeApp(firebaseConfig);
+	const auth = getAuth(app);
 
+	// Auth State
+	onAuthStateChanged(auth, (user) => {
+		if (user) {
+			displayProfile(user);
+		} else {
+			window.location.href = "/";
+		}
+	});
 
-
-// Auth State
-onAuthStateChanged(auth, (user) => {
-	if (user) {
-		// User is signed in, see docs for a list of available properties
-		// https://firebase.google.com/docs/reference/js/auth.user
-		const uid = user.uid;
-		// ...
-		displayProfile(user);
-	} else {
-		// User is signed out
-		window.location.href = "/"
+	function displayProfile(user) {
+		const userEmail = user.email;
+		const userEmailElement = document.getElementById("user-email");
+		if (userEmailElement) {
+			userEmailElement.textContent = userEmail;
+		}
 	}
-});
 
-function displayProfile(user) {
-	// const userName = user.displayName;
-	const userEmail = user.email;
+	// Sign Out
+	const handleSignOut = async () => {
+		try {
+			await signOut(auth);
+			console.log("Sign out successful.");
+		} catch (error) {
+			console.error("Error signing out:", error);
+		}
+	};
 
-	document.getElementById("user-email").textContent = userEmail;
+	const signOutButton = document.getElementById("sign-out");
+	if (signOutButton) {
+		signOutButton.addEventListener("click", handleSignOut);
+	}
 }
 
-
-// Sign Out
-const handleSignOut = async () => {
-	try {
-		await signOut(auth);
-		console.log("Sign out successful.");
-	} catch (error) {
-		console.error("Error signing out:", error);
-	}
-};
-
-document.getElementById("sign-out").addEventListener("click", handleSignOut);
-
+initializeFirebase();
